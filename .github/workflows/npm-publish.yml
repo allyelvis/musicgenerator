@@ -1,0 +1,26 @@
+name: Publish to GitHub Packages
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Publishes only when a new version tag is pushed
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '14'  # Use the Node version your project needs
+        registry-url: 'https://npm.pkg.github.com'  # For GitHub Packages
+
+    - name: Authenticate to GitHub Packages
+      run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
+
+    - name: Publish package
+      run: npm publish
